@@ -6,31 +6,20 @@ namespace WalletApp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class GatWayController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<GatWayController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public GatWayController(ILogger<GatWayController> logger)
         {
             _logger = logger;
         }
 
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateTime.Now.AddDays(index),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
 
         [HttpPost(Name = "SendWeatherForecast")]
         public IEnumerable<WeatherForecast> Post(int flag)
@@ -56,7 +45,7 @@ namespace WalletApp.Controllers
         public  async  Task<string> Get()
         {
              
-            HttpClient client = new HttpClient(); // Git Test App sdf  dsfdsf
+            HttpClient client = new HttpClient(); // Git Test 
            // Call asynchronous network methods in a try/catch block to handle exceptions.
             try
             {
@@ -72,9 +61,6 @@ namespace WalletApp.Controllers
             {
                 return "";
             }
-            
-            
-
         }
 
     }

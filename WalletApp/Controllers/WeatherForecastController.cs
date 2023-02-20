@@ -55,8 +55,8 @@ namespace WalletApp.Controllers
         [HttpGet(Name = "GetPosts")]
         public  async  Task<string> Get()
         {
-
-            HttpClient client = new HttpClient(); // Git Test App 
+             
+            HttpClient client = new HttpClient(); // Git Test App sdf  dsfdsf
            // Call asynchronous network methods in a try/catch block to handle exceptions.
             try
             {

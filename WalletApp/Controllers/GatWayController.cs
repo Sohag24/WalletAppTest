@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using WalletApp.Model;
 
 namespace WalletApp.Controllers
 {
@@ -14,30 +16,31 @@ namespace WalletApp.Controllers
     };
 
         private readonly ILogger<GatWayController> _logger;
+        private readonly DBClass _dbContext;
 
-        public GatWayController(ILogger<GatWayController> logger)
+        public GatWayController(ILogger<GatWayController> logger,DBClass dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-
+        
         [HttpPost(Name = "SendWeatherForecast")]
-        public IEnumerable<WeatherForecast> Post(int flag)
+        public async Task<string> Post(int flag)
         {
-            if (flag == 1)
+            try
             {
-                return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    Date = DateTime.Now.AddDays(index),
-                    TemperatureC = Random.Shared.Next(-20, 55),
-                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-                })
-                .ToArray();
+                
+                
+                var newUser = new User() { Name = "John Smith", Email = "john.smith@example.com" };
+                //_dbContext.Users.Add(newUser);
+                var userRepository = new Repository<User>(_dbContext);
+                var savedUser = await userRepository.SaveAsync(newUser);
+                return "Data Successfully Save";
             }
-            else
+            catch (Exception ex)
             {
-                WeatherForecast[] a = {};
-                return a.ToArray();
+                return ex.Message;
             }
         }
 

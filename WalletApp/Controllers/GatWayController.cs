@@ -41,27 +41,37 @@ namespace WalletApp.Controllers
             }
         }
 
+        //[HttpGet(Name = "GetPosts")]
+        //public  async  Task<string> Get()
+        //{
+
+        //    HttpClient client = new HttpClient(); // Git Test 
+        //   // Call asynchronous network methods in a try/catch block to handle exceptions.
+        //    try
+        //    {
+        //        using HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts");
+        //        response.EnsureSuccessStatusCode();
+        //        string responseBody = await response.Content.ReadAsStringAsync();
+        //        // Above three lines can be replaced with new helper method below
+        //        // string responseBody = await client.GetStringAsync(uri);
+
+        //        return responseBody;
+        //    }
+        //    catch (HttpRequestException e)
+        //    {
+        //        return "";
+        //    }
+        //}
+
+
         [HttpGet(Name = "GetPosts")]
-        public  async  Task<string> Get()
+        public async Task<string> Get()
         {
-             
-            HttpClient client = new HttpClient(); // Git Test 
-           // Call asynchronous network methods in a try/catch block to handle exceptions.
-            try
-            {
-                using HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                // Above three lines can be replaced with new helper method below
-                // string responseBody = await client.GetStringAsync(uri);
-                
-                return responseBody;
-            }
-            catch (HttpRequestException e)
-            {
-                return "";
-            }
+            var baseurl = "https://jsonplaceholder.typicode.com/";
+            RestApiClient ApiClient = new RestApiClient(baseurl);
+            return await ApiClient.GetAsync("posts","Test","MyHeader","1");
         }
+
 
     }
 }

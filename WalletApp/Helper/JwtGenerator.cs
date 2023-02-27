@@ -6,12 +6,14 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WalletApp.Migrations;
 
 public class JwtGenerator
 {
-    public static string GenerateJwtToken(string base64PrivateKey, string issuer, string audience, int expirationMinutes,string body)
+    public static string GenerateJwtTokenOLD(string base64PrivateKey, string issuer, string audience, int expirationMinutes,string body)
     {
         var rsa = new RSACryptoServiceProvider();
         var privateKeyBytes = Convert.FromBase64String(base64PrivateKey);
@@ -140,7 +142,7 @@ public class JwtGenerator
 
 
 
-    public static string GenerateJwtTokenNew(string base64PrivateKey, string issuer, string audience, int expirationMinutes, string body)
+    public static string GenerateJwtToken(string base64PrivateKey, string issuer, string audience, int expirationMinutes, string body)
     {
         var UTCDateTime = GetUTCDateTime();
         // String BodyStr = JsonConvert.SerializeObject(body);
@@ -148,6 +150,7 @@ public class JwtGenerator
         int iats = (int)(UTCDateTime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         int exps = (int)(UTCDateTime.AddSeconds(30).Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
+        /*
         // Define the payload of the JWT
         var payload = new
         {
@@ -158,9 +161,20 @@ public class JwtGenerator
             uri = "/v1/vault/accounts",
             bodyHash = GetBase64Sha256Hash(body)
         };
+        */
+
+        ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[]
+        {
+        new Claim("sub", "31b2497e-5296-85a6-e57e-67180f647155"),
+        new Claim("nonce",Guid.NewGuid().ToString()),
+        new Claim("iat",iats.ToString(),ClaimValueTypes.Integer),
+        new Claim("exp",exps.ToString(),ClaimValueTypes.Integer),
+        new Claim("uri","/v1/vault/accounts"),
+        new Claim("bodyHash",GetBase64Sha256Hash(body))
+      });
 
         // Convert the payload to a JSON string
-        var payloadJson = JsonConvert.SerializeObject(payload);
+        //var payloadJson = JsonConvert.SerializeObject(payload);
 
         // Load the private key from a file or some other secure storage location
         var privateKey = LoadPrivateKey();
@@ -168,6 +182,7 @@ public class JwtGenerator
         // Create the signing credentials using the RSA256 algorithm and the private key
         var signingCredentials = new SigningCredentials(new RsaSecurityKey(privateKey), SecurityAlgorithms.RsaSha256);
 
+        /*
         // Create the JWT token with the payload and signing credentials
         var jwtToken = new JwtSecurityToken(
             issuer: "Sohag",//"https://clearcryptos.com/",
@@ -177,9 +192,20 @@ public class JwtGenerator
             expires: UTCDateTime.AddSeconds(30),//DateTime.UtcNow.AddSeconds(30),
             signingCredentials: signingCredentials
         );
+        */
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        //create the jwt
+        var token = (JwtSecurityToken)
+                tokenHandler.CreateJwtSecurityToken(issuer: "Sam", audience: "sohag",
+                    subject: claimsIdentity, notBefore: UTCDateTime,issuedAt:UTCDateTime, expires: UTCDateTime.AddSeconds(30), signingCredentials: signingCredentials);
+        var tokenString =tokenHandler.WriteToken(token);
+
+        return tokenString;
 
         // Encode the JWT token as a string
-        return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        //return new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
 
 
@@ -187,11 +213,22 @@ public class JwtGenerator
 
     private static string GetBase64Sha256Hash(string input)
     {
+        string hashString;
         using (var sha256 = SHA256.Create())
         {
-            var hash = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
-            return Convert.ToBase64String(hash);
+            var hash = sha256.ComputeHash(Encoding.Default.GetBytes(input));
+            hashString = ToHex(hash, false);
         }
+
+        return hashString;
+    }
+
+    private static string ToHex(byte[] bytes, bool upperCase)
+    {
+        StringBuilder result = new StringBuilder(bytes.Length * 2);
+        for (int i = 0; i < bytes.Length; i++)
+            result.Append(bytes[i].ToString(upperCase ? "X2" : "x2"));
+        return result.ToString();
     }
 
 

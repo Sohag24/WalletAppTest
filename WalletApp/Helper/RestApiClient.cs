@@ -43,7 +43,7 @@ public class RestApiClient
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"API call failed with status code {response.StatusCode}. Response body: {responseBody}");
+            throw new Exception($"API call failed with status code {response.StatusCode}.  Token: {authorizationToken}  Response body: {responseBody}");
         }
 
         return responseBody;
@@ -78,7 +78,7 @@ public class RestApiClient
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"API call failed with status code {response.StatusCode}. Response body: {responseBody}");
+            throw new Exception($"API call failed with status code {response.StatusCode}. Token: {authorizationToken} Response body: {responseBody}");
         }
 
         return responseBody;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using WalletApp.Helper;
 using WalletApp.Model;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -36,10 +37,13 @@ namespace WalletApp.Controllers
         [HttpPost("CreateVault")]
         public async Task<string> CreateVault([FromBody] JsonElement body)
         {
+            Configuration con = new Configuration(_configuration);
+            ConfigurationDTO configuration = con.getConfiguration();
+
             string uri = "/v1/vault/accounts";
             string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
-            string key=_configuration["Jwt:Key"]??"";
-            string baseurl = _configuration["FireBlocks_BaseURL"]??"";
+            string key= configuration.Key;
+            string baseurl = configuration.FireBlocks_BaseURL;
             var token = JwtGenerator.GenerateJwtToken(uri, BodyStr, key);
 
             RestApiClient ApiClient = new RestApiClient(baseurl);

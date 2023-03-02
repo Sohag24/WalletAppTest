@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Text.Json;
 using WalletApp.Helper;
 using WalletApp.Model;
@@ -25,6 +28,46 @@ namespace WalletApp.Controllers
         {
             FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
             return await FG.CallApi(EndPoints.VaultCreate,ApiMethods.Post,body);
+        }
+
+        // Get api/<WalletController>
+        [HttpGet("GetSupportedAssets")]
+        public async Task<string> GetSupportedAssets()
+        {
+            JsonElement EmptyJson= new JsonElement();
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(EndPoints.SupportedAssets, ApiMethods.Get, EmptyJson);
+        }
+
+        // POST api/<WalletController>
+        [HttpPost("AddAssets")]
+        public async Task<string> AddAssets([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+            string endPoint = EndPoints.VaultCreate + "/" + data.vaultId + "/" + data.assetId;
+            string? eosAccountName = data.eosAccountName;
+
+            JsonElement newBody=new JsonElement();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                using (Utf8JsonWriter writer = new Utf8JsonWriter(stream))
+                {
+                    writer.WriteStartObject();
+
+                    writer.WriteString("eosAccountName", eosAccountName);
+
+                    writer.WriteEndObject();
+                }
+
+                byte[] json = stream.ToArray();
+                JsonDocument document = JsonDocument.Parse(json);
+                newBody = document.RootElement;
+            }
+
+
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(endPoint, ApiMethods.Post, newBody);
         }
 
     }

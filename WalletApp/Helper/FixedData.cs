@@ -3,6 +3,8 @@
     public static class EndPoints
     {
         public const string VaultCreate = "/v1/vault/accounts";
+        public const string SupportedAssets = "/v1/supported_assets";
+        
     }
 
     public static class ApiMethods

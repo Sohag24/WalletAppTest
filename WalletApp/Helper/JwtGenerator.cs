@@ -9,12 +9,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WalletApp.Helper;
 using WalletApp.Migrations;
 
 public class JwtGenerator
 {
   
-    public static string GenerateJwtToken(string uri, string body,string key)
+    public static string GenerateJwtToken(string uri, string ApiMethod, string body,string key)
     {
         var UTCDateTime = GetUTCDateTime();
 
@@ -27,9 +28,14 @@ public class JwtGenerator
         new Claim("nonce",Guid.NewGuid().ToString()),
         new Claim("iat",iats.ToString(),ClaimValueTypes.Integer),
         new Claim("exp",exps.ToString(),ClaimValueTypes.Integer),
-        new Claim("uri",uri),
-        new Claim("bodyHash",GetBase64Sha256Hash(body))
-      });
+        new Claim("uri",uri)
+        //new Claim("bodyHash",GetBase64Sha256Hash(body))
+        });
+
+        if (ApiMethod == ApiMethods.Post)
+        {
+            claimsIdentity.AddClaim(new Claim("bodyHash", GetBase64Sha256Hash(body)));
+        }
 
         // Load the private key from a file or some other secure storage location
         var privateKey = LoadPrivateKey();

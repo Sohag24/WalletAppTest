@@ -78,5 +78,60 @@ namespace WalletApp.Controllers
             return await FG.CallApi(endPoint, ApiMethods.Post, newBody);
         }
 
+
+        // Get api/<WalletController>
+        [HttpGet("Sila/GenrateWallet")]
+        public string GenrateWallet()
+        {
+            Sila_GateWay SG = new Sila_GateWay();
+            return  SG.GenerateWallet();
+        }
+
+        // Get api/<WalletController>
+        [HttpPost("Sila/CheckHandle")]
+        public string CHeckHandle([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.CheckHandle(Convert.ToString(data.userHandle));
+        }
+
+        // Get api/<WalletController>
+        [HttpPost("Sila/RegisterUser")]
+        public string RegisterUser([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic userData = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.RegisterUser(userData);
+        }
+
+        // Get api/<WalletController>
+        [HttpPost("Sila/RequestKYC")]
+        public string RequestKYC([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.RequestKYC(Convert.ToString(data.userHandle), Convert.ToString(data.userPrivateKey));
+        }
+
+
+        // Get api/<WalletController>
+        [HttpPost("Sila/CheckKYC")]
+        public string CheckKYC([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.CheckKYC(Convert.ToString(data.userHandle), Convert.ToString(data.userPrivateKey));
+        }
+
+
     }
 }

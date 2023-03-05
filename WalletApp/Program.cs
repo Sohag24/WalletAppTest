@@ -16,6 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -64,6 +68,7 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
+app.UseCors();
 
 app.MapControllers();
 

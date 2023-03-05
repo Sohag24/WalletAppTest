@@ -30,6 +30,14 @@ namespace WalletApp.Controllers
             return await FG.CallApi(EndPoints.VaultCreate,ApiMethods.Post,body);
         }
 
+        [HttpGet("GetVaults")]
+        public async Task<string> GetVaults()
+        {
+            JsonElement EmptyJson = new JsonElement();
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(EndPoints.VaultAccounts, ApiMethods.Get, EmptyJson);
+        }
+
         // Get api/<WalletController>
         [HttpGet("GetSupportedAssets")]
         public async Task<string> GetSupportedAssets()

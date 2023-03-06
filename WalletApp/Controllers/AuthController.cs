@@ -74,8 +74,23 @@ namespace WalletApp.Controllers
             var userRepository = new Repository<User>(_dbContext);
             var savedUser = await userRepository.SaveAsync(newUser);
 
+            var rabbitMQ = new RabbitMQHelper("localhost", "guest", "guest");
+            rabbitMQ.PublishMessage("New User Created! Id: "+newUser.Id.ToString()+" Name: "+newUser.Name, "myqueue");
+
             return Ok();
         }
+
+        [AllowAnonymous]
+        [HttpGet("ReceiveMessage")]
+        public async Task<string> ReceiveMessage()
+        {
+            string message = "";
+            var rabbitMQ = new RabbitMQHelper("localhost", "guest", "guest");
+            message = await rabbitMQ.ReceiveMessages("myqueue");
+
+            return message==""?"No Message": message;
+        }
+
     }
 
     public class LoginDto

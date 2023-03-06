@@ -16,7 +16,7 @@ namespace WalletApp.Controllers
     public class WalletController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-
+        
         public WalletController(IConfiguration configuration)
         {
             _configuration = configuration;

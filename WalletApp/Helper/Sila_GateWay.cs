@@ -99,5 +99,38 @@ class Sila_GateWay
         return json;
     }
 
+    public string PlaidLinkToken(string userHandle, string userPrivateKey)
+    {
+        var Link = api.PlaidLinkToken(userHandle, userPrivateKey);
+        var obj = new
+        {
+            Data = Link.Data
+        };
+        var json = JsonSerializer.Serialize(obj);
+        return json;
+    }
+
+    public string LinkAccount(string userHandle,string publicToken, string userPrivateKey,string accountName,string accountId,string plaidInTokenType)
+    {
+        var Link = api.LinkAccount(userHandle, publicToken, userPrivateKey,accountName,accountId,plaidInTokenType);
+        var obj = new
+        {
+            Data = Link.Data
+        };
+        var json = JsonSerializer.Serialize(obj);
+        return json;
+    }
+
+    public string GetEntities()
+    {
+        var Entity = api.GetEntities();
+        var obj = new
+        {
+            Data = Entity.Data
+        };
+        var json = JsonSerializer.Serialize(obj);
+        return json;
+    }
+
 
 }

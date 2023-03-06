@@ -132,6 +132,36 @@ namespace WalletApp.Controllers
             return SG.CheckKYC(Convert.ToString(data.userHandle), Convert.ToString(data.userPrivateKey));
         }
 
+        // Get api/<WalletController>
+        [HttpPost("Sila/PlaidLinkToken")]
+        public string PlaidLinkToken([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.PlaidLinkToken(Convert.ToString(data.userHandle), Convert.ToString(data.userPrivateKey));
+        }
+
+        // Get api/<WalletController>
+        [HttpPost("Sila/LinkAccount")]
+        public string LinkAccount([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.LinkAccount(Convert.ToString(data.userHandle), Convert.ToString(data.publicToken), Convert.ToString(data.userPrivateKey), Convert.ToString(data.accountName), Convert.ToString(data.accountId), Convert.ToString(data.plaidInTokenType));
+        }
+
+        // Get api/<WalletController>
+        [HttpGet("Sila/GetEntities")]
+        public string GetEntities()
+        {
+            Sila_GateWay SG = new Sila_GateWay();
+            return SG.GetEntities();
+        }
+
 
     }
 }

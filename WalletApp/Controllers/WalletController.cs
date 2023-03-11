@@ -38,6 +38,21 @@ namespace WalletApp.Controllers
             return await FG.CallApi(EndPoints.VaultAccounts, ApiMethods.Get, EmptyJson);
         }
 
+        // POST api/<WalletController>
+        [HttpPost("GetVaultsByVaultId")]
+        public async Task<string> GetVaultsByVaultId([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+            string endPoint = EndPoints.VaultCreate + "/" + data.vaultId;
+            string? eosAccountName = data.eosAccountName;
+
+            JsonElement EmptyJson = new JsonElement();
+
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(endPoint, ApiMethods.Get, EmptyJson);
+        }
+
         // Get api/<WalletController>
         [HttpGet("GetSupportedAssets")]
         public async Task<string> GetSupportedAssets()

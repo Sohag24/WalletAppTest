@@ -94,6 +94,41 @@ namespace WalletApp.Controllers
         }
 
 
+        [HttpPost("HideVault")]
+        public async Task<string> HideVault([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+            string endPoint = EndPoints.VaultCreate + "/" + data.vaultAccountId+"/hide";        
+
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(endPoint, ApiMethods.Post, body);
+        }
+
+        [HttpPost("UnhideVault")]
+        public async Task<string> UnhideVault([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+            string endPoint = EndPoints.VaultCreate + "/" + data.vaultAccountId + "/unhide";
+
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(endPoint, ApiMethods.Post, body);
+        }
+
+        [HttpPost("Activate")]
+        public async Task<string> Activate([FromBody] JsonElement body)
+        {
+            string BodyStr = System.Text.Json.JsonSerializer.Serialize(body);
+            dynamic data = JObject.Parse(BodyStr);
+            string endPoint = EndPoints.VaultCreate + "/" + data.vaultAccountId+"/"+ data.assetId + "/activate";
+
+            FireBlocks_GateWay FG = new FireBlocks_GateWay(_configuration);
+            return await FG.CallApi(endPoint, ApiMethods.Post, body);
+        }
+
+        // Sila Part .............................................
+
         // Get api/<WalletController>
         [HttpGet("Sila/GenrateWallet")]
         public string GenrateWallet()

@@ -78,8 +78,11 @@ public class JwtGenerator
 
     private static RSA LoadPrivateKey()
     {
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var filePath = Path.Combine(currentDirectory, "Helper", "privatekey.pem");
+
         // Replace this path with the path to your private key file
-        string privateKeyFilePath = "D:/privatekey.pem";
+        string privateKeyFilePath = filePath;//"D:/privatekey.pem";
 
         // Read the contents of the private key file
         string privateKeyText = File.ReadAllText(privateKeyFilePath);
@@ -98,10 +101,10 @@ public class JwtGenerator
         var httpClient = new HttpClient();
 
         // Set the URL of the World Time API endpoint
-        var apiUrl = "http://worldtimeapi.org/api/timezone/Asia/Dhaka";
+        var apiUrl = "https://worldtimeapi.org/api/timezone/Asia/Dhaka";
 
         // Send an HTTP GET request to the API endpoint and get the response
-        var response = httpClient.GetAsync(apiUrl).Result;
+        var response =  httpClient.GetAsync(apiUrl).Result;
 
         // Read the response content as a string
         var responseContent = response.Content.ReadAsStringAsync().Result;
@@ -109,7 +112,7 @@ public class JwtGenerator
         var jsonObject = JObject.Parse(responseContent);
 
         // Get the value of the "name" variable as a string
-        var utc_datetime = (DateTime)jsonObject["utc_datetime"];
+        var utc_datetime =(DateTime)jsonObject["utc_datetime"];
 
 
         // Parse the response JSON to get the current UTC datetime
